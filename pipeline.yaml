@@ -12,8 +12,8 @@ stages:
     pool:
       name: 'SelfHostedAgentPool'
     variables:
-      AKS_RESOURCE_GROUP: "your-aks-rg"
-      AKS_CLUSTER_NAME: "your-aks-name"
+      AKS_RESOURCE_GROUP: "TradingInfra"
+      AKS_CLUSTER_NAME: "TradingCluster"
       KUBE_NAMESPACE: "elastic"
       MANIFEST_FOLDER: "kubernetes"
     steps:
