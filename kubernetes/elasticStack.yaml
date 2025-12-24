@@ -2,7 +2,7 @@
 apiVersion: elasticsearch.k8s.elastic.co/v1
 kind: Elasticsearch
 metadata:
-  name: quickstart
+  name: elasticsearch
   namespace: elastic
 spec:
   version: 8.14.0
@@ -29,35 +29,35 @@ spec:
 apiVersion: kibana.k8s.elastic.co/v1
 kind: Kibana
 metadata:
-  name: quickstart
+  name: kibana
   namespace: elastic
 spec:
   version: 8.14.0
   count: 1
 
   elasticsearchRef:
-    name: quickstart
+    name: elasticsearch
 
   config:
     xpack.fleet.enabled: true
 
     xpack.fleet.agents.elasticsearch.hosts:
-      - https://quickstart-es-http.elastic.svc:9200
+      - https://elasticsearch-es-http.elastic.svc:9200
 ---
 apiVersion: agent.k8s.elastic.co/v1alpha1
 kind: Agent
 metadata:
-  name: fleet-server
+  name: fleetserver
   namespace: elastic
 spec:
   version: 8.14.0
   mode: fleet
   fleetServerEnabled: true
   elasticsearchRefs:
-    - name: quickstart
+    - name: elasticsearch
       namespace: elastic
   kibanaRef:
-    name: quickstart
+    name: kibana
     namespace: elastic
   deployment:
     replicas: 1
