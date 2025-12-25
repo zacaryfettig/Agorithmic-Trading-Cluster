@@ -28,10 +28,6 @@ stages:
             --resource-group $(AKS_RESOURCE_GROUP) \
             --name $(AKS_CLUSTER_NAME) \
             --overwrite-existing
-            
-    - script: |
-        curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
-      displayName: "Install Helm"
 
     - script: |
         set -e
@@ -43,6 +39,12 @@ stages:
         echo "##vso[task.prependpath]$(Pipeline.Workspace)/bin"
         helm version
       displayName: "Install Helm (no sudo)"
+
+    - script: |
+        helm repo add elastic https://helm.elastic.co
+        helm repo update
+        helm install elastic-agent elastic/eck-operator -n $KUBE_NAMESPACE --create-namespace
+      displayName: "Install Elastic Operator via Helm"
 
     - script: |
         kubectl apply -f $(MANIFEST_FOLDER)
