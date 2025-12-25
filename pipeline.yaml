@@ -10,7 +10,7 @@ stages:
   - job: Deploy
     displayName: "Deploy Kubernetes resources"
     pool:
-      name: 'SelfHostedAgentPool'
+      name: 'TradingContainerAgent'
     variables:
       AKS_RESOURCE_GROUP: "TradingInfra"
       AKS_CLUSTER_NAME: "TradingCluster"
