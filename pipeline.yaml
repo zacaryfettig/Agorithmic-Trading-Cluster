@@ -10,28 +10,45 @@ stages:
   - job: Deploy
     displayName: "Deploy Kubernetes resources"
     pool:
-      name: 'SelfHostedAgentPool'
+      name: 'TradingContainerAgent'
     variables:
-      AKS_RESOURCE_GROUP: "your-aks-rg"
-      AKS_CLUSTER_NAME: "your-aks-name"
+      AKS_RESOURCE_GROUP: "TradingInfra"
+      AKS_CLUSTER_NAME: "TradingCluster"
       KUBE_NAMESPACE: "elastic"
       MANIFEST_FOLDER: "kubernetes"
     steps:
-    - script: |
-        az aks get-credentials \
-          --resource-group $(AKS_RESOURCE_GROUP) \
-          --name $(AKS_CLUSTER_NAME) \
-          --admin
+    - task: AzureCLI@2
       displayName: "Set up kubeconfig for AKS"
+      inputs:
+        azureSubscription: "Azure-Subscription-Trading"
+        scriptType: bash
+        scriptLocation: inlineScript
+        inlineScript: |
+          az aks get-credentials \
+            --resource-group $(AKS_RESOURCE_GROUP) \
+            --name $(AKS_CLUSTER_NAME) \
+            --overwrite-existing
 
     - script: |
-        curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+        set -e
+        HELM_VERSION=v3.19.4
+        curl -LO https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz
+        tar -zxvf helm-${HELM_VERSION}-linux-amd64.tar.gz
+        mkdir -p $(Pipeline.Workspace)/bin
+        mv linux-amd64/helm $(Pipeline.Workspace)/bin/helm
+        chmod +x $(Pipeline.Workspace)/bin/helm
+        echo "##vso[task.prependpath]$(Pipeline.Workspace)/bin"
       displayName: "Install Helm"
+
+    - script: |
+        helm version
+      displayName: "Verify Helm"
+
 
     - script: |
         helm repo add elastic https://helm.elastic.co
         helm repo update
-        helm install elastic-agent elastic/eck-operator -n $KUBE_NAMESPACE --create-namespace
+        helm upgrade --install elastic-agent elastic/eck-operator -n $KUBE_NAMESPACE --create-namespace
       displayName: "Install Elastic Operator via Helm"
 
     - script: |
