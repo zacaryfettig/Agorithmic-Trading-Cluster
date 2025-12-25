@@ -40,6 +40,10 @@ stages:
         echo "##vso[task.prependpath]$(Pipeline.Workspace)/bin"
       displayName: "Install Helm"
 
+    - script: |
+        helm version
+      displayName: "Verify Helm"
+
 
     - script: |
         helm repo add elastic https://helm.elastic.co
