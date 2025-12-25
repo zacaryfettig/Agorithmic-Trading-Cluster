@@ -48,7 +48,7 @@ stages:
     - script: |
         helm repo add elastic https://helm.elastic.co
         helm repo update
-        helm install elastic-agent elastic/eck-operator -n $KUBE_NAMESPACE --create-namespace
+        helm upgrade --install elastic-agent elastic/eck-operator -n $KUBE_NAMESPACE --create-namespace
       displayName: "Install Elastic Operator via Helm"
 
     - script: |
