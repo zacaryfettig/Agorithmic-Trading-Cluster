@@ -36,9 +36,10 @@ stages:
         tar -zxvf helm-${HELM_VERSION}-linux-amd64.tar.gz
         mkdir -p $(Pipeline.Workspace)/bin
         mv linux-amd64/helm $(Pipeline.Workspace)/bin/helm
+        chmod +x $(Pipeline.Workspace)/bin/helm
         echo "##vso[task.prependpath]$(Pipeline.Workspace)/bin"
-        helm version
-      displayName: "Install Helm (no sudo)"
+      displayName: "Install Helm"
+
 
     - script: |
         helm repo add elastic https://helm.elastic.co
