@@ -5,7 +5,7 @@ metadata:
   name: elasticsearch
   namespace: elastic
 spec:
-  version: 8.14.0
+  version: 8.16.0
   nodeSets:
     - name: default
       count: 1
@@ -25,6 +25,7 @@ spec:
               requests:
                 storage: 50Gi
             storageClassName: default
+
 ---
 apiVersion: kibana.k8s.elastic.co/v1
 kind: Kibana
@@ -32,7 +33,7 @@ metadata:
   name: kibana
   namespace: elastic
 spec:
-  version: 8.14.0
+  version: 8.16.0
   count: 1
 
   elasticsearchRef:
@@ -40,9 +41,11 @@ spec:
 
   config:
     xpack.fleet.enabled: true
-
+    xpack.fleet.agents.fleet_server.hosts:
+      - http://kibana-kb-http.elastic.svc:5601
     xpack.fleet.agents.elasticsearch.hosts:
       - https://elasticsearch-es-http.elastic.svc:9200
+
 ---
 apiVersion: agent.k8s.elastic.co/v1alpha1
 kind: Agent
@@ -50,9 +53,10 @@ metadata:
   name: fleetserver
   namespace: elastic
 spec:
-  version: 8.14.0
+  version: 8.16.0
   mode: fleet
   fleetServerEnabled: true
+  
   elasticsearchRefs:
     - name: elasticsearch
       namespace: elastic
