@@ -17,13 +17,18 @@ stages:
       KUBE_NAMESPACE: "elastic"
       MANIFEST_FOLDER: "kubernetes"
     steps:
-    - script: |
-        az aks get-credentials \
-          --resource-group $(AKS_RESOURCE_GROUP) \
-          --name $(AKS_CLUSTER_NAME) \
-          --admin
+    - task: AzureCLI@2
       displayName: "Set up kubeconfig for AKS"
-
+      inputs:
+        azureSubscription: "Azure-Subscription-Trading"
+        scriptType: bash
+        scriptLocation: inlineScript
+        inlineScript: |
+          az aks get-credentials \
+            --resource-group $(AKS_RESOURCE_GROUP) \
+            --name $(AKS_CLUSTER_NAME) \
+            --overwrite-existing
+            
     - script: |
         curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
       displayName: "Install Helm"
