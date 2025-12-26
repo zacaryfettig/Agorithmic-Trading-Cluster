@@ -59,6 +59,8 @@ stages:
 
     - script: |
         set -e
+        echo "Waiting for Kibana pod to be ready..."
+        kubectl wait --for=condition=Ready pod -l app=kibana -n $KUBE_NAMESPACE --timeout=120s
 
         echo "Getting Elastic password"
         ELASTIC_PASSWORD=$(kubectl get secret elasticsearch-es-elastic-user \
