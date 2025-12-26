@@ -58,12 +58,12 @@ stages:
     - script: |
         set -e
 
-        echo "Fetching Elastic password..."
+        echo "Getting Elastic password"
         ELASTIC_PASSWORD=$(kubectl get secret elasticsearch-es-elastic-user \
           -n $(KUBE_NAMESPACE) \
           -o jsonpath="{.data.elastic}" | base64 --decode)
 
-        echo "Fetching Kibana external IP..."
+        echo "Getting Kibana external IP"
         KIBANA_IP=$(kubectl get svc kibana-kb-http \
           -n $(KUBE_NAMESPACE) \
           -o jsonpath="{.status.loadBalancer.ingress[0].ip}")
