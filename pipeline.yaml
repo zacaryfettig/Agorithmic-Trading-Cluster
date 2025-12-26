@@ -54,3 +54,24 @@ stages:
     - script: |
         kubectl apply -f $(MANIFEST_FOLDER)
       displayName: "Deploy all Kubernetes YAML manifests"
+
+    - script: |
+        set -e
+
+        echo "Fetching Elastic password..."
+        ELASTIC_PASSWORD=$(kubectl get secret elasticsearch-es-elastic-user \
+          -n $(KUBE_NAMESPACE) \
+          -o jsonpath="{.data.elastic}" | base64 --decode)
+
+        echo "Fetching Kibana external IP..."
+        KIBANA_IP=$(kubectl get svc kibana-kb-http \
+          -n $(KUBE_NAMESPACE) \
+          -o jsonpath="{.status.loadBalancer.ingress[0].ip}")
+
+        KIBANA_URL="https://${KIBANA_IP}:5601"
+
+        echo "##vso[task.setvariable variable=ELASTIC_PASSWORD;issecret=true]$ELASTIC_PASSWORD"
+        echo "##vso[task.setvariable variable=KIBANA_URL]$KIBANA_URL"
+
+        echo "Kibana URL: $KIBANA_URL"
+      displayName: "Get Kibana URL and Elastic Password"
