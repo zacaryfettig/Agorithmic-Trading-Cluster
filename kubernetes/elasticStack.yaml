@@ -56,7 +56,7 @@ spec:
   version: 8.16.0
   mode: fleet
   fleetServerEnabled: true
-  
+
   elasticsearchRefs:
     - name: elasticsearch
       namespace: elastic
