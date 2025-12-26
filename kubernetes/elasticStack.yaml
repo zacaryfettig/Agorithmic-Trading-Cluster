@@ -39,6 +39,14 @@ spec:
   elasticsearchRef:
     name: elasticsearch
 
+  http:
+    service:
+      spec:
+        type: ClusterIP
+    tls:
+      selfSignedCertificate:
+        disabled: true
+
   config:
     xpack.fleet.enabled: true
     xpack.fleet.agents.fleet_server.hosts:
