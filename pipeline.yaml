@@ -31,22 +31,6 @@ stages:
             --name $(AKS_CLUSTER_NAME) \
             --overwrite-existing
 
-#    - script: |
-#        set -e
-#        HELM_VERSION=v3.19.4
-#        curl -LO https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz
-#        tar -zxvf helm-${HELM_VERSION}-linux-amd64.tar.gz
-#        mkdir -p $(Pipeline.Workspace)/bin
-#        mv linux-amd64/helm $(Pipeline.Workspace)/bin/helm
-#        chmod +x $(Pipeline.Workspace)/bin/helm
-#        echo "##vso[task.prependpath]$(Pipeline.Workspace)/bin"
-#      displayName: "Install Helm"
-
-#    - script: |
-#        helm version
-#      displayName: "Verify Helm"
-
-
     - script: |
         helm repo add elastic https://helm.elastic.co
         helm repo update
