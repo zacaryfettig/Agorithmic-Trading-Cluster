@@ -16,6 +16,8 @@ stages:
       AKS_CLUSTER_NAME: "TradingCluster"
       KUBE_NAMESPACE: "elastic"
       MANIFEST_FOLDER: "kubernetes"
+      KEYVAULT_NAME: "TradingKeyVault"
+
     steps:
     - task: AzureCLI@2
       displayName: "Set up kubeconfig for AKS"
@@ -70,8 +72,8 @@ stages:
 
         KIBANA_URL="https://${KIBANA_IP}:5601"
 
-        echo "##vso[task.setvariable variable=ELASTIC_PASSWORD;issecret=true]$ELASTIC_PASSWORD"
-        echo "##vso[task.setvariable variable=KIBANA_URL]$KIBANA_URL"
+        az keyvault secret set --vault-name $(KEKEYVAULT_NAME) --name "ElasticPassword" --value "$ELASTIC_PASSWORD"
+        az keyvault secret set --vault-name $(KEKEYVAULT_NAME) --name "KibanaURL" --value "$KIBANA_URL"
 
         echo "Kibana URL: $KIBANA_URL"
       displayName: "Get Kibana URL and Elastic Password"
