@@ -103,7 +103,7 @@ stages:
             -u "elastic:$ELASTIC_PASSWORD" \
             -H "Content-Type: application/json" \
             -d '{"name":"ci-cd-fleet-server","namespace":"default","is_managed":false}' \
-            | jq -r '.item.id')
+            | jq -r '.items[] | select(.name=="ci-cd-fleet-server") | .id')
             echo "Fleet Server Policy ID: $POLICY_ID"
 
 
