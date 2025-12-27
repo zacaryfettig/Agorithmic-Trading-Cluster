@@ -98,9 +98,14 @@ stages:
                   "monitoring_enabled": ["logs","metrics"]
                 }')
 
-          # Extract the policy ID
-          POLICY_ID=$(echo "$POLICY_JSON" | jq -r '.item.id')
-          echo "Fleet Server Policy ID: $POLICY_ID"
+          POLICY_ID=$(curl -s -X POST "$KIBANA_URL/api/fleet/agent_policies" \
+            -H "kbn-xsrf: true" \
+            -u "elastic:$ELASTIC_PASSWORD" \
+            -H "Content-Type: application/json" \
+            -d '{"name":"ci-cd-fleet-server","namespace":"default","is_managed":false}' \
+            | jq -r '.item.id')
+            echo "Fleet Server Policy ID: $POLICY_ID"
+
 
           # Patch the Fleet Server agent to associate with this policy
           kubectl patch agent fleetserver -n $(KUBE_NAMESPACE) --type=merge -p "{\"spec\":{\"policyID\":\"$POLICY_ID\"}}"
