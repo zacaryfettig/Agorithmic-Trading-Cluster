@@ -71,5 +71,27 @@ spec:
   kibanaRef:
     name: kibana
     namespace: elastic
+  config:
+    outputs:
+      default:
+        type: elasticsearch
+        hosts:
+          - https://elasticsearch-es-http.elastic.svc:9200
   deployment:
     replicas: 1
+  podTemplate:
+    spec:
+      serviceAccountName: default
+      automountServiceAccountToken: true
+      # Required to fully collect process metrics
+      hostPID: true
+      securityContext:
+        runAsUser: 0
+        runAsGroup: 0
+        fsGroup: 0
+      # Add capabilities needed by Metricbeat to collect IO, CPU, etc.
+      containers:
+        - name: agent
+          securityContext:
+            capabilities:
+              add: ["SYS_PTRACE"]
