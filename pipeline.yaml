@@ -68,7 +68,7 @@ stages:
             echo "Kibana URL: $KIBANA_URL"
 
     - task: AzureCLI@2
-      displayName: "Create Fleet Server Policy with Kubernetes Integration"
+      displayName: "Create Fleet Server Policy and Associate Agent"
       inputs:
         azureSubscription: "Azure-Subscription-Trading"
         scriptType: bash
@@ -77,12 +77,12 @@ stages:
           # Wait for Kibana pod to be ready
           kubectl wait --for=condition=Ready pod -l kibana.k8s.elastic.co/name=kibana -n $(KUBE_NAMESPACE) --timeout=5m
 
-          # Get Elastic password (for API auth)
+          # Get Elastic password for API auth
           ELASTIC_PASSWORD=$(kubectl get secret elasticsearch-es-elastic-user \
             -n $(KUBE_NAMESPACE) \
             -o jsonpath="{.data.elastic}" | base64 --decode)
 
-          # Get Kibana URL (assuming ClusterIP for internal API access)
+          # Internal ClusterIP URL for Kibana
           KIBANA_URL="http://kibana-kb-http.$(KUBE_NAMESPACE).svc:5601"
 
           # Create Fleet Server policy via Kibana API
@@ -101,7 +101,7 @@ stages:
           # Extract the policy ID
           POLICY_ID=$(echo "$POLICY_JSON" | jq -r '.item.id')
           echo "Fleet Server Policy ID: $POLICY_ID"
-          
+
           # Patch the Fleet Server agent to associate with this policy
           kubectl patch agent fleetserver -n $(KUBE_NAMESPACE) --type=merge -p "{\"spec\":{\"policyID\":\"$POLICY_ID\"}}"
           echo "Fleet Server agent associated with policy $POLICY_ID"
