@@ -106,6 +106,19 @@ stages:
             | jq -r '.items[] | select(.name=="ci-cd-fleet-server") | .id')
             echo "Fleet Server Policy ID: $POLICY_ID"
 
+                  # Add Fleet Server input to the policy
+          curl -s -X POST "$KIBANA_URL/api/fleet/agent_policies/$POLICY_ID/inputs" \
+            -H "kbn-xsrf: true" \
+            -u "elastic:$ELASTIC_PASSWORD" \
+            -H "Content-Type: application/json" \
+            -d '{
+                  "type": "fleet-server",
+                  "enabled": true,
+                  "vars": {
+                  "host": { "value": "https://fleet-server.elastic.svc:8220" }
+                }
+              }'
+
 
           # Patch the Fleet Server agent to associate with this policy
           kubectl patch agent fleetserver -n $(KUBE_NAMESPACE) --type=merge -p "{\"spec\":{\"policyID\":\"$POLICY_ID\"}}"
