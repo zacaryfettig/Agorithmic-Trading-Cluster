@@ -4,7 +4,7 @@ trigger:
       - main
 
 stages:
-- stage: DeployElastic
+- stage: Deploy
   displayName: "Deploy Elastic Stack to AKS"
   jobs:
   - job: Deploy
