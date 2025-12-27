@@ -101,12 +101,7 @@ stages:
           # Extract the policy ID
           POLICY_ID=$(echo "$POLICY_JSON" | jq -r '.item.id')
           echo "Fleet Server Policy ID: $POLICY_ID"
-
-          # Add Kubernetes integration to the policy
-          curl -s -X POST "$KIBANA_URL/api/fleet/agent_policies/$POLICY_ID/integrations" \
-            -H "kbn-xsrf: true" \
-            -u "elastic:$ELASTIC_PASSWORD" \
-            -H "Content-Type: application/json" \
-            -d '{"pkgkey": "kubernetes-1.7.0"}'
-
-          echo "Fleet Server policy created and Kubernetes integration added"
+          
+          # Patch the Fleet Server agent to associate with this policy
+          kubectl patch agent fleetserver -n $(KUBE_NAMESPACE) --type=merge -p "{\"spec\":{\"policyID\":\"$POLICY_ID\"}}"
+          echo "Fleet Server agent associated with policy $POLICY_ID"
