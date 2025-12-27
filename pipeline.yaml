@@ -16,7 +16,6 @@ stages:
       AKS_CLUSTER_NAME: "TradingCluster"
       KUBE_NAMESPACE: "elastic"
       MANIFEST_FOLDER: "kubernetes"
-      KEYVAULT_NAME: "TradingKeyVault12"
 
     steps:
     - task: AzureCLI@2
