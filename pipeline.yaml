@@ -40,29 +40,3 @@ stages:
     - script: |
         kubectl apply -f $(MANIFEST_FOLDER)
       displayName: "Deploy all Kubernetes YAML manifests"
-
-    - task: AzureCLI@2
-      displayName: "Get Kibana URL and Elastic Password"
-      inputs:
-        azureSubscription: "Azure-Subscription-Trading"
-        scriptType: bash
-        scriptLocation: inlineScript
-        inlineScript: |
-            kubectl wait --for=condition=Ready pod -l kibana.k8s.elastic.co/name=kibana -n elastic --timeout=5m
-
-            echo "Getting Elastic password"
-            ELASTIC_PASSWORD=$(kubectl get secret elasticsearch-es-elastic-user \
-              -n $(KUBE_NAMESPACE) \
-              -o jsonpath="{.data.elastic}" | base64 --decode)
-
-            echo "Getting Kibana external IP"
-            KIBANA_IP=$(kubectl get svc kibana-kb-http \
-              -n $(KUBE_NAMESPACE) \
-              -o jsonpath="{.status.loadBalancer.ingress[0].ip}")
-
-            KIBANA_URL="https://${KIBANA_IP}:5601"
-
-            az keyvault secret set --vault-name $(KEYVAULT_NAME) --name "KibanaURL" --value "$KIBANA_URL"
-            az keyvault secret set --vault-name $(KEYVAULT_NAME) --name "ElasticPassword" --value "$ELASTIC_PASSWORD"
-
-            echo "Kibana URL: $KIBANA_URL"
