@@ -8,16 +8,15 @@ variables:
   AZURE_SUBSCRIPTION: "Azure-Subscription-Trading"
   POOL_NAME: "TradingContainerAgent"
 
-  # Docker / ACR
+  # ACR
   ACR_NAME: "tradingacr"
   IMAGE_NAME: "tradingapp"
-  IMAGE_TAG: "$(Build.BuildId)"
 
   # AKS Kubernetes
   AKS_RESOURCE_GROUP: "TradingInfra"
   AKS_CLUSTER_NAME: "TradingCluster"
   KUBE_NAMESPACE: "tradingapp"
-  MANIFEST_FOLDER: "kubernetes"
+  MANIFEST_FOLDER: "kubernetes/TradingAppDeploy"
 
 stages:
 - stage: BuildImage
@@ -39,7 +38,7 @@ stages:
 
 - stage: DeployTradingApp
   displayName: "Deploy TradingApp to AKS"
-  dependsOn: BuildAndPushImage
+  dependsOn: BuildImage
   jobs:
   - job: Deploy
     displayName: "Deploy Kubernetes resources"
@@ -60,8 +59,7 @@ stages:
 
     - script: |
         kubectl create namespace $(KUBE_NAMESPACE) --dry-run=client -o yaml | kubectl apply -f -
-      displayName: "Ensure Kubernetes namespace exists"
-
+      displayName: "Creat Kubernetes namespace if it doesn't already exist"
 
     - script: |
         kubectl apply -f $(MANIFEST_FOLDER)
