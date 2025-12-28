@@ -9,7 +9,7 @@ variables:
   POOL_NAME: "TradingContainerAgent"
 
   # ACR
-  ACR_NAME: "tradingacr"
+  ACR_NAME: "kubetrading"
   IMAGE_NAME: "tradingapp"
 
   # AKS Kubernetes
