@@ -59,5 +59,10 @@ stages:
             --overwrite-existing
 
     - script: |
+        kubectl create namespace $(KUBE_NAMESPACE) --dry-run=client -o yaml | kubectl apply -f -
+      displayName: "Ensure Kubernetes namespace exists"
+
+
+    - script: |
         kubectl apply -f $(MANIFEST_FOLDER)
       displayName: "Deploy all Kubernetes YAML manifests"
