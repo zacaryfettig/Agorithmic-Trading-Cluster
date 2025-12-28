@@ -75,6 +75,6 @@ stages:
         export TRADING_APP_IMAGE=$(ACR_NAME).azurecr.io/$(IMAGE_NAME):$(TAG)
         for f in $(MANIFEST_FOLDER)/*.yaml; do
             sed -i "s|\${TRADING_APP_IMAGE}|$TRADING_APP_IMAGE|g" "$f"
-            kubectl apply -f "$f"
+            kubectl apply -f "$f" -n $(KUBE_NAMESPACE)
         done
       displayName: "Deploy TradingApp with dynamic image"
