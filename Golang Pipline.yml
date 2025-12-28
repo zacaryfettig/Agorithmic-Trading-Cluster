@@ -17,6 +17,7 @@ variables:
   AKS_CLUSTER_NAME: "TradingCluster"
   KUBE_NAMESPACE: "tradingapp"
   MANIFEST_FOLDER: "kubernetes/TradingAppDeploy"
+  
 
 stages:
 - stage: BuildImage
