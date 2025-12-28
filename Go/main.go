@@ -21,9 +21,9 @@ func main() {
 //	godotenv.Load()
 
 	//Load Environment Variables form Azure Devops
-	apiKey := os.Getenv("ALPACA_API_KEY_ID")
-	apiSecret := os.Getenv("ALPACA_API_SECRET_KEY")
-	baseURL := os.Getenv("ALPACA_BASE_URL")
+	apiKey := os.Getenv("APCA_API_KEY_ID")
+	apiSecret := os.Getenv("APCA_API_SECRET_KEY")
+	baseURL := os.Getenv("APCA_BASE_URL")
 
 	if apiKey == "" || apiSecret == "" || baseURL == "" {
 		log.Fatal("Missing required Alpaca environment variables")
