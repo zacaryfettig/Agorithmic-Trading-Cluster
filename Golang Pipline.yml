@@ -62,5 +62,14 @@ stages:
       displayName: "Creat Kubernetes namespace if it doesn't already exist"
 
     - script: |
+        kubectl create secret generic alpaca-secrets \
+          --namespace $(KUBE_NAMESPACE) \
+          --from-literal=APCA_API_KEY_ID=$APCA_API_KEY_ID \
+          --from-literal=APCA_API_SECRET_KEY=$APCA_API_SECRET_KEY \
+          --dry-run=client -o yaml | kubectl apply -f -
+      displayName: "Create Alpaca Secret"
+
+
+    - script: |
         kubectl apply -f $(MANIFEST_FOLDER)
       displayName: "Deploy all Kubernetes YAML manifests"
