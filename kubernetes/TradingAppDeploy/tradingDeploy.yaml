@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: trading-app
-          image: ${TRADING_APP_IMAGE}
+          image: #{TRADING_APP_IMAGE}
           imagePullPolicy: Always
           env:
             - name: ALPACA_API_KEY
