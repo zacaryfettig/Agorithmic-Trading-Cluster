@@ -68,7 +68,7 @@ stages:
           --namespace $(KUBE_NAMESPACE) \
           --from-literal=APCA_API_KEY_ID=$APCA_API_KEY_ID \
           --from-literal=APCA_API_SECRET_KEY=$APCA_API_SECRET_KEY \
-           --from-literal=ALPACA_BASE_URL=$ALPACA_BASE_URL \
+           --from-literal=APCA_BASE_URL=$APCA_BASE_URL \
           --dry-run=client -o yaml | kubectl apply -f -
       displayName: "Create Alpaca Secret"
 
