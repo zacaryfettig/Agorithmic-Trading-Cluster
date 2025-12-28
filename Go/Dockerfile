@@ -1,5 +1,5 @@
 #build Stage
-FROM golang:1.22-alpine AS build
+FROM golang:1.24-alpine AS build
 
 # Install CA certs
 RUN apk add --no-cache ca-certificates
@@ -24,8 +24,8 @@ RUN apk add --no-cache ca-certificates
 
 WORKDIR /app
 
-# Copy binary from builder
-COPY --from=builder /app/app .
+# Copy binary from buid
+COPY --from=build /app/app .
 
 # Run the app
 CMD ["./app"]
