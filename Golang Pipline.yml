@@ -17,7 +17,7 @@ variables:
   # AKS Kubernetes
   AKS_RESOURCE_GROUP: "TradingInfra"
   AKS_CLUSTER_NAME: "TradingCluster"
-  KUBE_NAMESPACE: "tradingapp"
+  KUBE_NAMESPACE: "trading-app"
   MANIFEST_FOLDER: "kubernetes/TradingAppDeploy"
   
 stages:
