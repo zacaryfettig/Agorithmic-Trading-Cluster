@@ -34,7 +34,7 @@ stages:
         scriptType: bash
         scriptLocation: inlineScript
         inlineScript: |
-          az acr build --registry tradingacr --image tradingapp:latest Go
+          az acr build --registry tradingacr --image $(IMAGE_NAME):latest Go
 
 - stage: DeployTradingApp
   displayName: "Deploy TradingApp to AKS"
@@ -71,5 +71,6 @@ stages:
 
 
     - script: |
-        kubectl apply -f $(MANIFEST_FOLDER)
-      displayName: "Deploy all Kubernetes YAML manifests"
+        export TRADING_APP_IMAGE=$(ACR_NAME).azurecr.io/$(IMAGE_NAME):latest
+        envsubst < $(MANIFEST_FOLDER)/tradingDeploy.yaml | kubectl apply -f -
+      displayName: "Deploy TradingApp with templated image"
