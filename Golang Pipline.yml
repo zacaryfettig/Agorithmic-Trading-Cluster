@@ -11,6 +11,8 @@ variables:
   # ACR
   ACR_NAME: "kubetrading"
   IMAGE_NAME: "tradingapp"
+  TAG: "latest"
+  TRADING_APP_IMAGE: "$(ACR_NAME).azurecr.io/$(IMAGE_NAME):$(TAG)"
 
   # AKS Kubernetes
   AKS_RESOURCE_GROUP: "TradingInfra"
@@ -34,7 +36,7 @@ stages:
         scriptType: bash
         scriptLocation: inlineScript
         inlineScript: |
-          az acr build --registry $(ACR_NAME) --image $(IMAGE_NAME):latest Go
+          az acr build --registry $(ACR_NAME) --image $(IMAGE_NAME):$(TAG) Go
 
 - stage: DeployTradingApp
   displayName: "Deploy TradingApp to AKS"
