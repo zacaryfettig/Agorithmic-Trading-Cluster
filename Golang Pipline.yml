@@ -75,6 +75,10 @@ stages:
         folderPath: '$(MANIFEST_FOLDER)'
         targetFiles: '**/*.yaml'
 
+    - script: |
+        kubectl apply -f $(MANIFEST_FOLDER)
+      displayName: "Deploy all Kubernetes YAML"
+
 
 #    - script: |
 #        apt-get update && apt-get install -y gettext-base
