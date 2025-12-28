@@ -8,7 +8,7 @@ import (
 	"os"
 
 	"github.com/alpacahq/alpaca-trade-api-go/v3/alpaca"
-	"github.com/joho/godotenv"
+//	"github.com/joho/godotenv"
 )
 
 //Dev deployment local variables
