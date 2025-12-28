@@ -71,21 +71,10 @@ stages:
           --dry-run=client -o yaml | kubectl apply -f -
       displayName: "Create Alpaca Secret"
 
-    - task: FileTransform@1
-      displayName: "Replace image variable in YAML"
-      inputs:
-        folderPath: '$(MANIFEST_FOLDER)'
-        targetFiles: '**/*.yaml'
-
     - script: |
-        kubectl apply -f $(MANIFEST_FOLDER)
-      displayName: "Deploy all Kubernetes YAML"
-
-
-#    - script: |
-#        apt-get update && apt-get install -y gettext-base
-#
-#        export TRADING_APP_IMAGE=$(ACR_NAME).azurecr.io/$(IMAGE_NAME):latest
-#        
-#        envsubst < $(MANIFEST_FOLDER)/tradingDeploy.yaml | kubectl apply -f -
-#      displayName: "Deploy TradingApp with templated image"
+        export TRADING_APP_IMAGE=$(ACR_NAME).azurecr.io/$(IMAGE_NAME):$(TAG)
+        for f in $(MANIFEST_FOLDER)/*.yaml; do
+            sed -i "s|\${TRADING_APP_IMAGE}|$TRADING_APP_IMAGE|g" "$f"
+            kubectl apply -f "$f"
+        done
+      displayName: "Deploy TradingApp with dynamic image"
