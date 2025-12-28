@@ -11,12 +11,23 @@ import (
 	"github.com/joho/godotenv"
 )
 
-var apiKey = os.Getenv("APCA_API_KEY_ID")
-var apiSecret = os.Getenv("APCA_API_SECRET_KEY")
-var baseURL = os.Getenv("APCA_BASE_URL")
+//Dev deployment local variables
+//var apiKey = os.Getenv("APCA_API_KEY_ID")
+//var apiSecret = os.Getenv("APCA_API_SECRET_KEY")
+//var baseURL = os.Getenv("APCA_BASE_URL")
 
 func main() {
-	godotenv.Load()
+//Loads environment variables for locally dev testing
+//	godotenv.Load()
+
+	//Load Environment Variables form Azure Devops
+	apiKey := os.Getenv("ALPACA_API_KEY_ID")
+	apiSecret := os.Getenv("ALPACA_API_SECRET_KEY")
+	baseURL := os.Getenv("ALPACA_BASE_URL")
+
+	if apiKey == "" || apiSecret == "" || baseURL == "" {
+		log.Fatal("Missing required Alpaca environment variables")
+	}
 
 	client := alpaca.NewClient(alpaca.ClientOpts{
 
