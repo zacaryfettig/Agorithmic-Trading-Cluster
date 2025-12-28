@@ -34,7 +34,7 @@ stages:
         scriptType: bash
         scriptLocation: inlineScript
         inlineScript: |
-          az acr build --registry tradingacr --image $(IMAGE_NAME):latest Go
+          az acr build --registry $(ACR_NAME) --image $(IMAGE_NAME):latest Go
 
 - stage: DeployTradingApp
   displayName: "Deploy TradingApp to AKS"
