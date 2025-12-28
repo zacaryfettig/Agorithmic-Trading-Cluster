@@ -1,0 +1,41 @@
+trigger:
+  branches:
+    include:
+      - main
+
+stages:
+- stage: Deploy
+  displayName: "Deploy Elastic Stack to AKS"
+  jobs:
+  - job: Deploy
+    displayName: "Deploy Kubernetes resources"
+    pool:
+      name: 'TradingContainerAgent'
+    variables:
+      AKS_RESOURCE_GROUP: "TradingInfra"
+      AKS_CLUSTER_NAME: "TradingCluster"
+      KUBE_NAMESPACE: "elastic"
+      MANIFEST_FOLDER: "kubernetes"
+
+    steps:
+    - task: AzureCLI@2
+      displayName: "Set up kubeconfig for AKS"
+      inputs:
+        azureSubscription: "Azure-Subscription-Trading"
+        scriptType: bash
+        scriptLocation: inlineScript
+        inlineScript: |
+          az aks get-credentials \
+            --resource-group $(AKS_RESOURCE_GROUP) \
+            --name $(AKS_CLUSTER_NAME) \
+            --overwrite-existing
+
+    - script: |
+        helm repo add elastic https://helm.elastic.co
+        helm repo update
+        helm upgrade --install elastic-agent elastic/eck-operator -n $KUBE_NAMESPACE --create-namespace
+      displayName: "Install Elastic Operator via Helm"
+
+    - script: |
+        kubectl apply -f $(MANIFEST_FOLDER)
+      displayName: "Deploy all Kubernetes YAML manifests"
